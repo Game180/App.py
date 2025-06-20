@@ -9,18 +9,11 @@ List_of_passwords = []
 with open('Pwdb_top-10000.txt', 'r') as file:
     for line in file:
         for word in line.split():
-            print(word)
             List_of_passwords.append(word)
 
 # Password check function
 def check_password(event):
     user_password = password_box.text
-
-    # Greeting check
-    if user_password == "Josh Kenny":
-        print("Hi Josh")
-    else:
-        print("Hi")
 
     # Length check
     if len(user_password) < 8:
@@ -65,7 +58,7 @@ def generate_password(event):
     password = ''.join(random.choice(characters) for _ in range(length))
     generated_password_box.text = password
     generated_password_lbl.text = f"✅ Password generated! (Length: {length})"
-
+    
 # Create the app
 app = gp.GooeyPieApp('Locked Away')
 app.width = 600 
@@ -73,7 +66,7 @@ app.width = 600
 # Create widgets
 name_lbl = gp.Label(app, 'Locked Away')
 # passsword checker widgets
-password_lbl = gp.Label(app, 'Enter Password:')
+password_lbl = gp.Label(app, 'Enter your password: ')
 password_box = gp.Textbox(app, 20, 1)
 password_feedback = gp.Label(app, "Length Check: ")
 password_feedback_2 = gp.Label(app, "Digit Check: ")
