@@ -39,30 +39,7 @@ def check_password(event):
     else:
         password_feedback_4.text = "Common Password Check: ✅ Passed"
 
-# Password generator function
-def generate_password(event):
-    length = length_slider.value
-
-    characters = string.ascii_lowercase
-    if include_uppercase.checked:
-        characters += string.ascii_uppercase
-    if include_digits.checked:
-        characters += string.digits
-    if include_specials.checked:
-        characters += string.punctuation
-
-    if not characters:
-        generated_password_lbl.text = "❌ Choose at least one character type"
-        generated_password_box.text = ''
-        return
-
-    password = ''.join(random.choice(characters) for _ in range(length))
-    generated_password_box.text = password
-    generated_password_lbl.text = f"✅ Password generated! (Length: {length})"
-
-    # Start 2 minute timer to clear password (optional)
-    app.after(120000, clear_generated_password)
-
+# Clear generated password after 2 minutes
 def clear_generated_password():
     generated_password_box.text = ''
     generated_password_lbl.text = '🔒 Password cleared after 2 minutes.'
@@ -76,13 +53,44 @@ def copy_password(event):
     else:
         generated_password_lbl.text = "❌ No password to copy."
 
+# Password generator with Matrix effect animation
+def matrix_effect_and_generate(event):
+    length = length_slider.value
+    characters = string.ascii_lowercase
+    if include_uppercase.checked:
+        characters += string.ascii_uppercase
+    if include_digits.checked:
+        characters += string.digits
+    if include_specials.checked:
+        characters += string.punctuation
+
+    if not characters:
+        generated_password_lbl.text = "❌ Choose at least one character type"
+        generated_password_box.text = ''
+        return
+
+    animation_steps = 20
+    animation_delay = 50  # milliseconds
+
+    def show_random(step=0):
+        if step < animation_steps:
+            random_text = ''.join(random.choice(characters) for _ in range(length))
+            generated_password_box.text = random_text
+            app.after(animation_delay, lambda: show_random(step + 1))
+        else:
+            password = ''.join(random.choice(characters) for _ in range(length))
+            generated_password_box.text = password
+            generated_password_lbl.text = f"✅ Password generated! (Length: {length})"
+            # Start timer to clear password after 2 minutes
+            app.after(120000, clear_generated_password)
+
+    show_random()
+
 # Open Help window
 def open_help(event):
     help_app = gp.GooeyPieApp('Help')
     help_app.width = 500
     help_app.height = 400
-
-
     help_app.set_grid(10, 1)
 
     help_text = (
@@ -121,9 +129,7 @@ help_button.foreground = 'white'
 help_button.font = ('Arial', 12, 'bold')
 help_button.padding = 5
 app.add(help_button, 1, 3)
-
 help_button.add_event_listener('press', open_help)
-
 
 # -------- Password Checker Container --------
 checker_container = gp.Container(app)
@@ -169,17 +175,16 @@ include_uppercase = gp.Checkbox(generator_container, 'Include Uppercase Letters'
 include_digits = gp.Checkbox(generator_container, 'Include Numbers')
 include_specials = gp.Checkbox(generator_container, 'Include Special Characters')
 
-generate_button = gp.Button(generator_container, 'Generate Password', generate_password)
+generate_button = gp.Button(generator_container, 'Generate Password', matrix_effect_and_generate)
 copy_button = gp.Button(generator_container, 'Copy Password', copy_password)
 
 generated_password_lbl = gp.Label(generator_container, '')
-generated_password_box = gp.Textbox(generator_container, 30, 1.5)
+generated_password_box = gp.Textbox(generator_container, 30)
 generated_password_box.readonly = True
 
 generator_container.add(length_lbl, 2, 1)
 generator_container.add(length_slider, 2, 2)
 generator_container.add(length_value_lbl, 1, 2)
-
 generator_container.add(include_uppercase, 3, 1)
 generator_container.add(include_digits, 4, 1)
 generator_container.add(include_specials, 5, 1)
