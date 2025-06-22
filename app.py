@@ -53,7 +53,7 @@ def copy_password(event):
     else:
         generated_password_lbl.text = "❌ No password to copy."
 
-# Password generator with Matrix effect animation
+# Password generator with Matrix effect animation and whole text color change
 def matrix_effect_and_generate(event):
     length = length_slider.value
     characters = string.ascii_lowercase
@@ -71,17 +71,19 @@ def matrix_effect_and_generate(event):
 
     animation_steps = 20
     animation_delay = 50  # milliseconds
+    colors = ['green', 'lime', 'lightgreen', 'darkgreen']
 
     def show_random(step=0):
         if step < animation_steps:
             random_text = ''.join(random.choice(characters) for _ in range(length))
             generated_password_box.text = random_text
+            generated_password_box.foreground = random.choice(colors)  # Change color each step
             app.after(animation_delay, lambda: show_random(step + 1))
         else:
             password = ''.join(random.choice(characters) for _ in range(length))
             generated_password_box.text = password
+            generated_password_box.foreground = 'black'  # Reset to normal color
             generated_password_lbl.text = f"✅ Password generated! (Length: {length})"
-            # Start timer to clear password after 2 minutes
             app.after(120000, clear_generated_password)
 
     show_random()
