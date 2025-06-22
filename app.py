@@ -113,6 +113,15 @@ def open_help(event):
 def update_length_value_label(event):
     length_value_lbl.text = str(length_slider.value)
 
+def toggle_password_visibility(event):
+    if password_box.secret:
+        # Currently hidden, show password
+        password_box.secret = False
+        show_password_btn.text = "Hide"
+    else:
+        # Currently visible, hide password
+        password_box.secret = True
+        show_password_btn.text = "Show"
 # Create main app window
 app = gp.GooeyPieApp('Locked Away')
 app.width = 700
@@ -135,14 +144,20 @@ help_button.add_event_listener('press', open_help)
 
 # -------- Password Checker Container --------
 checker_container = gp.Container(app)
-checker_container.set_grid(7, 2)
+checker_container.set_grid(7, 3)  # Extra column for toggle button
 
 checker_title = gp.Label(checker_container, 'Password Strength Checker')
 checker_title.font = ('Arial', 16, 'bold')
-checker_container.add(checker_title, 1, 1, colspan=2)
+checker_container.add(checker_title, 1, 1, colspan=3)
 
 password_lbl = gp.Label(checker_container, 'Enter your password:')
+
+# Start with masked textbox (secret=True)
 password_box = gp.Textbox(checker_container, 35, 1)
+password_box.secret = True  # Mask input initially
+
+# Toggle Show/Hide button
+show_password_btn = gp.Button(checker_container, 'Show', toggle_password_visibility)
 
 submit = gp.Button(checker_container, 'Check Password', check_password)
 
@@ -153,11 +168,13 @@ password_feedback_4 = gp.Label(checker_container, "Common Password Check: ")
 
 checker_container.add(password_lbl, 2, 1)
 checker_container.add(password_box, 2, 2)
-checker_container.add(submit, 3, 2)
-checker_container.add(password_feedback, 4, 1, colspan=2)
-checker_container.add(password_feedback_2, 5, 1, colspan=2)
-checker_container.add(password_feedback_3, 6, 1, colspan=2)
-checker_container.add(password_feedback_4, 7, 1, colspan=2)
+checker_container.add(show_password_btn, 2, 3)
+checker_container.add(submit, 3, 3)
+
+checker_container.add(password_feedback, 4, 1, colspan=3)
+checker_container.add(password_feedback_2, 5, 1, colspan=3)
+checker_container.add(password_feedback_3, 6, 1, colspan=3)
+checker_container.add(password_feedback_4, 7, 1, colspan=3)
 
 app.add(checker_container, 2, 1, colspan=2)
 
