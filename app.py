@@ -109,42 +109,38 @@ def open_help(event):
 def update_length_value_label(event):
     length_value_lbl.text = str(length_slider.value)
 
-show_password = True
-def toggle_password_visibility(event):
-    global show_password
-    show_password = not show_password
-    password_box.secret = not show_password
-    toggle_password_btn.text = 'Hide' if show_password else 'Show'
+# -------------------- UI --------------------
 
 app = gp.GooeyPieApp('Locked Away')
-app.width = 750
-app.height = 600
-app.set_grid(30, 3)  # Increased rows to 30
+app.width = 1000
+app.height = 700
+app.set_grid(30, 6)
+app.set_column_weights(0, 1, 1, 1, 1, 1)
 
-app.set_column_weights(0, 1, 1)
-
+# Title + Help
 title_lbl = gp.Label(app, '🔐 Locked Away')
 title_lbl.font = ('Arial', 20, 'bold')
 app.add(title_lbl, 1, 1, colspan=2)
 
 help_button = gp.Button(app, 'Help', open_help)
 help_button.font = ('Arial', 10)
-app.add(help_button, 1, 3)
+app.add(help_button, 6, 3)
 
 # -------- Password Checker --------
 checker_container = gp.Container(app)
 checker_container.set_grid(9, 3)
 
-checker_title = gp.Label(checker_container, 'Password Strength Checker')
-checker_title.font = ('Arial', 14, 'bold')
+checker_title = gp.StyleLabel(checker_container, 'Password Strength Checker')
+checker_title.font_name = 'Arial'
+checker_title.font_style = 'italic'
+checker_title.font_size = 12
 checker_container.add(checker_title, 1, 1, colspan=3)
 
 password_lbl = gp.Label(checker_container, 'Enter your password:')
 password_box = gp.Textbox(checker_container, 35)
-password_box.secret = True
+
 
 submit = gp.Button(checker_container, 'Check Password', check_password)
-toggle_password_btn = gp.Button(checker_container, 'Show', toggle_password_visibility)
 
 password_feedback = gp.Label(checker_container, "Length Check: ")
 password_feedback_2 = gp.Label(checker_container, "Digit Check: ")
@@ -154,7 +150,6 @@ password_feedback_5 = gp.Label(checker_container, "HIBP Breach Check: ")
 
 checker_container.add(password_lbl, 2, 1)
 checker_container.add(password_box, 2, 2)
-checker_container.add(toggle_password_btn, 2, 3)
 checker_container.add(submit, 3, 2)
 
 checker_container.add(password_feedback, 4, 1, colspan=3)
@@ -163,15 +158,17 @@ checker_container.add(password_feedback_3, 6, 1, colspan=3)
 checker_container.add(password_feedback_4, 7, 1, colspan=3)
 checker_container.add(password_feedback_5, 8, 1, colspan=3)
 
-app.add(checker_container, 2, 1, colspan=1)
+app.add(checker_container, 2, 1, colspan=3)
 
 # -------- Password Generator --------
 generator = gp.Container(app)
 generator.set_grid(10, 2)
 
-generator_title = gp.Label(generator, 'Password Generator')
-generator_title.font = ('Arial', 18, 'bold')
-generator.add(generator_title, 1, 1, colspan=1)
+generator_title = gp.StyleLabel(generator, 'Password Generator')
+generator_title.font_name = 'Arial'
+generator_title.font_style = 'italic'
+generator_title.font_size = 12
+generator.add(generator_title, 1, 1, colspan=2)
 
 length_lbl = gp.Label(generator, 'Length:')
 length_slider = gp.Slider(generator, 4, 32, orientation='horizontal')
@@ -201,8 +198,10 @@ generator.add(copy_button, 7, 2)
 generator.add(generated_password_lbl, 8, 1, colspan=2)
 generator.add(generated_password_box, 9, 1, colspan=2)
 
-app.add(generator, 10, 1, colspan=3)
+app.add(generator, 2, 4, colspan=3)
 
+# Hook up slider event
 length_slider.add_event_listener('change', update_length_value_label)
 
+# Run the app
 app.run()
